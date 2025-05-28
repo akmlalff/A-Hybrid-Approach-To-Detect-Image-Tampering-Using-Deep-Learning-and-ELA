@@ -1,0 +1,38 @@
+{
+    "name": "tamper-app",
+    "version": "1.0.0",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "dist": "electron-builder"
+    },
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "sqlite3": "^5.1.7",
+        "validator": "^13.15.0"
+    },
+    "devDependencies": {
+        "electron": "^25.9.8",
+        "electron-builder": "^26.0.12"
+    },
+    "build": {
+        "appId": "com.yourdomain.tamperapp",
+        "productName": "Tamper App",
+        "files": [
+            "frontend/**/*",
+            "backend/**/*",
+            "models/**/*",
+            "main.js",
+            "package.json"
+        ],
+        "extraResources": [
+            {
+                "from": "dist/inference.exe",
+                "to": "inference.exe"
+            }
+        ],
+        "win": {
+            "target": "nsis"
+        }
+    }
+}
