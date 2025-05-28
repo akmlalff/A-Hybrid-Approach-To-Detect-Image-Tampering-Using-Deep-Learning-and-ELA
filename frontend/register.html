@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Image Forgery Detection</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html, body {
+      width:100%; height:100%;
+      background:#1e1e1e; color:#ddd;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display:flex; flex-direction:column;
+    }
+    h1 {
+      padding:1rem 0; text-align:center;
+      color:#fff; font-size:1.5rem;
+      border-bottom:1px solid #333;
+    }
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .form-container {
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #aaa;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #444;
+      background: #333;
+      color: #fff;
+      border-radius: 4px;
+    }
+    .validation-msg {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 0.25rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #2c5282;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background: #3182ce;
+    }
+    .error {
+      color: #fc8181;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .switch-form {
+      margin-top: 1rem;
+      text-align: center;
+      color: #aaa;
+    }
+    .switch-form a {
+      color: #63b3ed;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Forgery Detection using CNN and ELA</h1>
+  <div class="container">
+    <div class="form-container">
+      <h2 style="text-align: center; margin-bottom: 1.5rem; color: #fff;">Register</h2>
+      <div id="error-msg" class="error" style="display: none;"></div>
+      <form id="register-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+          <div class="validation-msg">Must be a valid email address with @</div>
+        </div>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+          <div class="validation-msg">Must be at least 8 characters with at least 1 capital letter</div>
+        </div>
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <input type="password" id="confirm-password" name="confirm-password" required>
+        </div>
+        <button type="submit">Register</button>
+      </form>
+      <div class="switch-form">
+        Already have an account? <a href="login.html">Login</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('register-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm-password');
+    const errorMsg = document.getElementById('error-msg');
+    
+    // Validate email format
+    function isValidEmail(email) {
+      return email.includes('@');
+    }
+    
+    // Validate password requirements
+    function isValidPassword(password) {
+      return password.length >= 8 && /[A-Z]/.test(password);
+    }
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = 'none';
+      
+      const email = emailInput.value.trim();
+      const username = document.getElementById('username').value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+      
+      // Validate email
+      if (!isValidEmail(email)) {
+        errorMsg.textContent = 'Please enter a valid email address with @';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      
+      // Validate password
+      if (!isValidPassword(password)) {
+        errorMsg.textContent = 'Password must be at least 8 characters with at least 1 capital letter';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      
+      // Check if passwords match
+      if (password !== confirmPassword) {
+        errorMsg.textContent = 'Passwords do not match';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      
+      try {
+        await window.api.register(email, username, password);
+        // If registration successful, redirect to login
+        window.location.href = 'login.html';
+      } catch (error) {
+        errorMsg.textContent = error.message || 'Registration failed';
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Help - Image Forgery Detection</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html, body {
+      width:100%; height:100%;
+      background:#1e1e1e; color:#ddd;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display:flex; flex-direction:column;
+    }
+    .top-header {
+      background: #333;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 2rem;
+      border-bottom: 1px solid #444;
+    }
+    .app-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: white;
+    }
+    .user-name {
+      font-weight: bold;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+    }
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+    .logout-link {
+      color: #63b3ed;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .logout-link:hover {
+      text-decoration: underline;
+    }
+    .content {
+      flex: 1;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: white;
+      text-align: center;
+    }
+    .card {
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: white;
+    }
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+    ul, ol {
+      margin-left: 2rem;
+      margin-bottom: 1rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <div class="user-name" id="username-display"></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="help.html">Help</a>
+      <a href="#" id="admin-panel-link" style="display:none;">Admin</a>
+    </div>
+    <a href="#" class="logout-link" id="logout-btn">Logout</a>
+  </header>
+
+  <div class="content">
+    <h1>Help Guide</h1>
+    
+    <div class="card">
+      <h2>How to Use the Application</h2>
+      <p>This application helps you detect image forgery using CNN (Convolutional Neural Network) and ELA (Error Level Analysis) techniques. Here's how to use it:</p>
+      <ol>
+        <li>Drag and drop an image into the designated area on the home page.</li>
+        <li>Click the "Analyze" button to process the image.</li>
+        <li>View the results, which will show if the image is authentic or tampered.</li>
+        <li>The analysis will also show a confidence score, indicating how certain the system is of its result.</li>
+        <li>ELA visualization will be displayed to help you see potential tampering areas.</li>
+      </ol>
+    </div>
+    
+    <div class="card">
+      <h2>Understanding the Results</h2>
+      <p>The application will classify your image as either:</p>
+      <ul>
+        <li><strong>Authentic:</strong> The image is likely original and unmodified.</li>
+        <li><strong>Tampered:</strong> The image shows signs of manipulation or editing.</li>
+      </ul>
+      <p>The confidence percentage indicates how sure the system is about this classification. Higher percentages mean more confidence in the result.</p>
+    </div>
+    
+    <div class="card">
+      <h2>About ELA Visualization</h2>
+      <p>Error Level Analysis (ELA) is a technique that highlights differences in JPEG compression levels. Areas that have been modified or pasted from another image will stand out in the ELA visualization.</p>
+      <p>In the ELA image:</p>
+      <ul>
+        <li>Uniform areas should have a uniform ELA pattern.</li>
+        <li>Areas with different compression levels (potentially edited) will appear brighter or with different textures.</li>
+        <li>Text and edges normally appear bright in ELA and don't necessarily indicate tampering.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is logged in
+    window.onload = async () => {
+      try {
+        const user = await window.api.getCurrentUser();
+        document.getElementById('username-display').textContent = user.username;
+        
+        // Show admin panel link if user is admin
+        if (user.is_admin) {
+          document.getElementById('admin-panel-link').style.display = 'inline';
+        }
+      } catch (err) {
+        // Redirect to login if not logged in
+        window.location.href = 'login.html';
+      }
+    };
+    
+    // Logout button
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await window.api.logout();
+      window.location.href = 'login.html';
+    });
+    
+    // Admin panel link
+    document.getElementById('admin-panel-link').addEventListener('click', () => {
+      window.location.href = 'admin.html';
+    });
+  </script>
+</body>
+</html> 

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Image Forgery Detection</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html, body {
+      width:100%; height:100%;
+      background:#1e1e1e; color:#ddd;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display:flex; flex-direction:column;
+    }
+    .top-header {
+      background: #333;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 2rem;
+      border-bottom: 1px solid #444;
+    }
+    .user-name {
+      font-weight: bold;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+    }
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+    .logout-link {
+      color: #63b3ed;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .logout-link:hover {
+      text-decoration: underline;
+    }
+    h1 {
+      padding:1rem 0; text-align:center;
+      color:#fff; font-size:1.5rem;
+      border-bottom:1px solid #333;
+    }
+    .container {
+      flex: 1;
+      padding: 2rem;
+      overflow: auto;
+    }
+    .card {
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      color: #fff;
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #444;
+    }
+    th {
+      background: #333;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background: #2c2c2c;
+    }
+    .refresh-btn {
+      padding: 0.5rem 1rem;
+      background: #2c5282;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 1rem;
+    }
+    .refresh-btn:hover {
+      background: #3182ce;
+    }
+  </style>
+</head>
+<body>
+  <header class="top-header">
+    <div class="user-name" id="username-display"></div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="help.html">Help</a>
+      <a href="#" id="admin-panel-link" style="display:inline;">Admin</a>
+    </div>
+    <a href="#" class="logout-link" id="logout-btn">Logout</a>
+  </header>
+  
+  <h1>Admin Dashboard</h1>
+  <div class="container">
+    <div class="card">
+      <h2>User Management</h2>
+      <button id="refresh-users-btn" class="refresh-btn">Refresh Users</button>
+      <div id="users-table-container">
+        <table id="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>Username</th>
+              <th>Encrypted Password</th>
+              <th>Admin</th>
+              <th>Last Login</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is admin
+    window.onload = async () => {
+      try {
+        const user = await window.api.getCurrentUser();
+        document.getElementById('username-display').textContent = user.username;
+        
+        if (!user.is_admin) {
+          // Redirect to app if not admin
+          window.location.href = 'index.html';
+        } else {
+          // Load users data
+          loadUsers();
+        }
+      } catch (err) {
+        // Redirect to login if not logged in
+        window.location.href = 'login.html';
+      }
+    };
+    
+    async function loadUsers() {
+      try {
+        const users = await window.api.getAllUsers();
+        const tableBody = document.getElementById('users-table-body');
+        tableBody.innerHTML = '';
+        
+        users.forEach(user => {
+          const row = document.createElement('tr');
+          
+          const idCell = document.createElement('td');
+          idCell.textContent = user.id;
+          
+          const emailCell = document.createElement('td');
+          emailCell.textContent = user.email;
+          
+          const usernameCell = document.createElement('td');
+          usernameCell.textContent = user.username;
+          
+          const passwordCell = document.createElement('td');
+          passwordCell.textContent = user.password; // This shows the encrypted password
+          
+          const adminCell = document.createElement('td');
+          adminCell.textContent = user.is_admin ? 'Yes' : 'No';
+          
+          const lastLoginCell = document.createElement('td');
+          lastLoginCell.textContent = user.last_login || 'Never';
+          
+          row.appendChild(idCell);
+          row.appendChild(emailCell);
+          row.appendChild(usernameCell);
+          row.appendChild(passwordCell);
+          row.appendChild(adminCell);
+          row.appendChild(lastLoginCell);
+          
+          tableBody.appendChild(row);
+        });
+      } catch (err) {
+        console.error('Error loading users:', err);
+      }
+    }
+    
+    // Event listeners
+    document.getElementById('refresh-users-btn').addEventListener('click', loadUsers);
+    
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await window.api.logout();
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html> 

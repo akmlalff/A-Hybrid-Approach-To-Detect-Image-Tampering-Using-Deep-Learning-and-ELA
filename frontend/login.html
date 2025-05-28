@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Image Forgery Detection</title>
+  <style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html, body {
+      width:100%; height:100%;
+      background:#1e1e1e; color:#ddd;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display:flex; flex-direction:column;
+    }
+    h1 {
+      padding:1rem 0; text-align:center;
+      color:#fff; font-size:1.5rem;
+      border-bottom:1px solid #333;
+    }
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+    .form-container {
+      background: #2a2a2a;
+      border-radius: 8px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 400px;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #aaa;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #444;
+      background: #333;
+      color: #fff;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #2c5282;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background: #3182ce;
+    }
+    .error {
+      color: #fc8181;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .switch-form {
+      margin-top: 1rem;
+      text-align: center;
+      color: #aaa;
+    }
+    .switch-form a {
+      color: #63b3ed;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Forgery Detection using CNN and ELA</h1>
+  <div class="container">
+    <div class="form-container">
+      <h2 style="text-align: center; margin-bottom: 1.5rem; color: #fff;">Login</h2>
+      <div id="error-msg" class="error" style="display: none;"></div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Email or Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Log In</button>
+      </form>
+      <div class="switch-form">
+        Don't have an account? <a href="register.html">Register</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      try {
+        await window.api.login(username, password);
+        // If login successful, redirect to app
+        window.location.href = 'index.html';
+      } catch (error) {
+        const errorMsg = document.getElementById('error-msg');
+        errorMsg.textContent = error.message || 'Login failed';
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html> 
