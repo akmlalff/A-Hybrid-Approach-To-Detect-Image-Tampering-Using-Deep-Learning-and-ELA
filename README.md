@@ -26,7 +26,8 @@ This project implements a lightweight Convolutional Neural Network (CNN) that au
 - 92% on training dataset
 - 89% on validation dataset 
 
-![Figure 1](assets/Figure_1.png) ![Figure 2](assets/Figure_2.png)
+![Figure 1](assets/Figure_1.png)
+![Figure 2](assets/Figure_2.png)
 ---
 
 ## Features
